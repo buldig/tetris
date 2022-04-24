@@ -17,11 +17,21 @@ export class Controller {
 
     start() {
         this.view.showArea(this.game.viewArea);
+        const showScore = this.view.createBlockScore();
+        const nextTetromino = this.view.createBlockNextTetromino();
+        this.game.createUpdatePanels(showScore, nextTetromino);
 
-        setInterval(() => {
-            this.game.moveDown();
-            this.view.showArea(this.game.viewArea);
-        }, 300);
+        const tick = () => {
+            let time = (1100 - 200 * this.game.level);
+            if(this.game.gameOver) return;
+            setTimeout(() => {
+                this.game.moveDown();
+                this.view.showArea(this.game.viewArea);
+                tick();
+            }, time > 100 ? time : 100);
+        };
+
+        tick();
 
         window.addEventListener('keydown', event => {
             const key = event.code;
